@@ -1,0 +1,6 @@
+5/4/2024 3:55 PM: Test for 1st run WindowsService
+5/4/2024 3:55 PM: 1st WindowsService has been stop
+5/4/2024 3:55 PM: Test for 1st run WindowsService
+5/4/2024 3:55 PM: 1st WindowsService has been stop
+5/4/2024 3:55 PM: Test for 1st run WindowsService
+5/4/2024 3:55 PM: 1st WindowsService has been stop
