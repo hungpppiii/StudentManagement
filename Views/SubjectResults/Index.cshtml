@@ -1,0 +1,69 @@
+﻿@model IEnumerable<QuanLySV.Dtos.SubjectResultDto>
+
+@{
+    ViewBag.Title = "List Subject";
+    var student = ViewBag.Student as QuanLySV.Models.Student;
+}
+
+<h2>Show subjects of students</h2>
+
+<h3>Student: @student.Name</h3>
+
+<p>
+    @Html.ActionLink("Register Subject", "RegisterSubject", new { studentId = student.Id })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            SubjectId
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            NumberOfLesson
+        </th>
+        <th>
+            ComponentScore
+        </th>
+        <th>
+            ProcessScore
+        </th>
+        <th>
+            Result
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.SubjectId
+            </td>
+            <td>
+                @item.SubjectName
+            </td>
+            <td>
+                @item.NumberOfLesson
+            </td>
+            <td>
+                @item.ComponentScore
+            </td>
+            <td>
+                @item.ProcessScore
+            </td>
+            <td>
+                @item.Result
+            </td>
+            <td>
+                @Html.ActionLink("InputPoint", "Edit", new { id = item.ResultId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ResultId })
+            </td>
+        </tr>
+    }
+</table>
+
+<div>
+    @Html.ActionLink("Back to List", "Index", "Students")
+</div>

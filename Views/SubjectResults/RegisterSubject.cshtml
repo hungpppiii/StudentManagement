@@ -1,0 +1,48 @@
+﻿@model IEnumerable<QuanLySV.Models.Subject>
+
+@{
+    ViewBag.Title = "Create";
+    var student = ViewBag.student as QuanLySV.Models.Student;
+}
+
+<h2>Register Subject for @ViewBag.Student.Name</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>SubjectResult</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <!--<div class="form-group">
+            <input type="hidden" name="myHiddenInput" id="myHiddenInput" value="@student.Id" />-->
+            @*@Html.Hidden("StudentId", ViewBag.student.Id, new { @class = "hiddencss", maxlength = 255 })*@
+        <!--</div>-->
+
+
+        <div class="form-group">
+            <div class="col-md-2">
+                @Html.Label("subjectId", "Select Subject", new { @class = "control-label" })
+            </div>
+            <div class="col-md-10">
+                @Html.DropDownList("subjectId", new SelectList(ViewBag.subjects, "Id", "Name"), "Select Subject", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", new { studentId = student.Id })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

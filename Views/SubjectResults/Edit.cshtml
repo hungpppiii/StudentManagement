@@ -1,0 +1,63 @@
+﻿@model QuanLySV.Models.SubjectResult
+
+@{
+    ViewBag.Title = "Edit Subject Result";
+    var student = Model.Student as QuanLySV.Models.Student;
+    var subject = Model.Subject as QuanLySV.Models.Subject;
+    var processScoreRatio = 1 - subject.ComponentScoreRatio;
+}
+
+<h2>Show subjects of students</h2>
+
+<h3>Student: @student.Name</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>SubjectResult</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            <div class="col-md-2">
+                Subject Name: <b>@subject.Name</b>
+            </div>
+            <div class="col-md-10">
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProcessScore, htmlAttributes: new { @class = "control-label" }) - @processScoreRatio
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProcessScore, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ProcessScore, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ComponentScore, htmlAttributes: new { @class = "control-label" }) - @subject.ComponentScoreRatio
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ComponentScore, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ComponentScore, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", new { studentId = student.Id })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

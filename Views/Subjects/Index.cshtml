@@ -1,0 +1,60 @@
+﻿@model IEnumerable<QuanLySV.Models.Subject>
+
+@{
+    ViewBag.Title = "List Subject";
+}
+
+<h2>View</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().NumberOfLesson)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().ComponentScoreRatio)
+        </th>
+        <th>
+            ProcessScoreRatio
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumberOfLesson)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ComponentScoreRatio)
+        </td>
+        <td>
+            @{
+                var adjustedValue = 1 - item.ComponentScoreRatio;
+            }
+            @Html.DisplayFor(modelItem => adjustedValue)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+        </td>
+    </tr>
+}
+
+</table>
