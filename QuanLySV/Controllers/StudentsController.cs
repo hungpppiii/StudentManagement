@@ -1,11 +1,14 @@
 ﻿using Castle.Core.Resource;
 using Castle.Windsor;
+using Dapper;
+using Microsoft.Data.SqlClient;
 using Newtonsoft.Json.Linq;
 using NHibernate;
 using QuanLySV.Common;
 using QuanLySV.Contants;
 using QuanLySV.Data;
 using QuanLySV.Dtos;
+using QuanLySV.Helpers;
 using QuanLySV.Models;
 using QuanLySV.Services;
 using System;
@@ -22,37 +25,57 @@ namespace QuanLySV.Controllers
     public class StudentsController : Controller
     {
         private readonly ISessionFactory _sessionFactory;
+        private SqlConnection _connection;
 
         public StudentsController(ISessionFactory sessionFactory)
         {
             _sessionFactory = sessionFactory;
+            _connection = new SqlConnection(FiddleHelper.GetConnectionStringSQLServer());
         }
 
         // GET: Students
         public ActionResult Index()
         {
-            using (var session = _sessionFactory.OpenSession())
-            {
-                var students = session.Query<Student>().ToList();
-                return View(students);
-            }
+            var selectListStudentSQL = "SELECT * FROM Students";
+
+            _connection.Open();
+
+            var students = _connection.Query<Student>(selectListStudentSQL).ToList();
+
+            _connection.Close();
+
+            return View(students);
+
+            //using (var session = _sessionFactory.OpenSession())
+            //{
+            //    var students = session.Query<Student>().ToList();
+            //    return View(students);
+            //}
         }
 
         //GET: Students/Details/5
         public ActionResult Details(int id)
         {
-            using (var session = _sessionFactory.OpenSession())
-            {
-                var student = session.Query<Student>().FirstOrDefault(s => s.Id == id);
-                return View(student);
-            }
+            var selectStudentSQL = "SELECT * FROM Students s WHERE s.Id = @studentId";
+
+            _connection.Open();
+
+            var students = _connection.QueryFirstOrDefault<Student>(selectStudentSQL, new { studentId = id });
+
+            _connection.Close();
+
+            return View(students);
+
+            //using (var session = _sessionFactory.OpenSession())
+            //{
+            //    var student = session.Query<Student>().FirstOrDefault(s => s.Id == id);
+            //    return View(student);
+            //}
         }
 
         // GET: Students/Create
         public ActionResult Create()
         {
-            //ViewData["Gender"] = new Student().Gender.ToSelectList();
-            //ViewData["Class"] = new Student().Class.ToSelectList();
             return View();
         }
 
@@ -62,24 +85,47 @@ namespace QuanLySV.Controllers
         {
             try
             {
-                using (var session = _sessionFactory.OpenSession())
+
+                var insertStudentSQL = @"INSERT INTO Students (Name, Gender, AcademyYear, Class, DateOfBirth) 
+                                        OUTPUT INSERTED.Id
+                                        VALUES (@Name, @Gender, @AcademyYear, @Class, @DateOfBirth)";
+                Enum.TryParse<Gender>(collection["Gender"], out var gender);
+                Enum.TryParse<Class>(collection["Class"], out var classEnum);
+                DateTime.TryParse(collection["DateOfBirth"], out var dateOfBirth);
+
+                _connection.Open();
+
+                var newStudentId = _connection.QuerySingle<int>(insertStudentSQL, new
                 {
-                    Enum.TryParse<Gender>(collection["Gender"], out var gender);
-                    Enum.TryParse<Class>(collection["Class"], out var classEnum);
-                    DateTime.TryParse(collection["DateOfBirth"], out var dateOfBirth);
+                    Name = collection["Name"],
+                    Gender = gender,
+                    AcademyYear = collection["AcademyYear"],
+                    Class = classEnum,
+                    DateOfBirth = dateOfBirth
+                });
 
-                    var newStudent = new Student()
-                    {
-                        Name = collection["Name"],
-                        Gender = gender,
-                        AcademyYear = collection["AcademyYear"],
-                        Class = classEnum,
-                        DateOfBirth = dateOfBirth,
-                    };
+                _connection.Close();
 
-                    session.Save(newStudent);
-                    return RedirectToAction($"Details/{newStudent.Id}");
-                }
+                return RedirectToAction($"Details/{newStudentId}");
+
+                //using (var session = _sessionFactory.OpenSession())
+                //{
+                //    Enum.TryParse<Gender>(collection["Gender"], out var gender);
+                //    Enum.TryParse<Class>(collection["Class"], out var classEnum);
+                //    DateTime.TryParse(collection["DateOfBirth"], out var dateOfBirth);
+
+                //    var newStudent = new Student()
+                //{
+                //    Name = collection["Name"],
+                //        Gender = gender,
+                //        AcademyYear = collection["AcademyYear"],
+                //        Class = classEnum,
+                //        DateOfBirth = dateOfBirth,
+                //    };
+
+                //    session.Save(newStudent);
+                //    return RedirectToAction($"Details/{newStudent.Id}");
+                //}
             }
             catch
             {

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Reflection;
+using QuanLySV.Helpers;
 
 namespace QuanLySV.Installers
 {
@@ -20,7 +21,7 @@ namespace QuanLySV.Installers
             {
                 var cfg = Fluently.Configure()
                 .Database(MsSqlConfiguration.MsSql2012
-                    .ConnectionString("Data Source=Keydiaz;Initial Catalog=StudentManagement;Integrated Security=True;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True")
+                    .ConnectionString(FiddleHelper.GetConnectionStringSQLServer())
                     .ShowSql())
                 .Mappings(m =>
                     m.FluentMappings
