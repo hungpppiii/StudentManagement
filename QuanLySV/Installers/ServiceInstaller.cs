@@ -10,6 +10,7 @@ using System.Linq;
 using System.Web;
 using System.Reflection;
 using QuanLySV.Helpers;
+using QuanLySV.Services;
 
 namespace QuanLySV.Installers
 {
@@ -30,6 +31,10 @@ namespace QuanLySV.Installers
 
                 return cfg.BuildSessionFactory();
             }).LifestyleSingleton());
+
+            container.Register(Component.For<IStudentService>().ImplementedBy<StudentService>());
+            container.Register(Component.For<ISubjectService>().ImplementedBy<SubjectService>());
+            container.Register(Component.For<ISubjectResultService>().ImplementedBy<SubjectResultService>());
         }
     }
 }
